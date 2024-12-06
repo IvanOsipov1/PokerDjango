@@ -1,0 +1,192 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+   <link rel="stylesheet" href="{% static main/styles/styles.css %}">
+    <style>
+        .dropdown {
+            display: none;
+        }
+
+        .dropdown.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<div class="menu-container">
+    <!-- Header with user info and settings -->
+    <header>
+        <div class="user-info">
+            <span class="profile-icon">👤</span>
+            <div class="user-details">
+                <span class="username">{{ username }}</span>
+                <p class="balance-info">Баланс: <span class="balance">{{ balance }}₽</span></p>
+            </div>
+        </div>
+        <div class="settings">
+            <button class="settings-btn" id="settings-button">⚙ Настройки</button>
+            <div class="dropdown" id="settings-menu">
+                <button class="dropdown-item" onclick="window.location.href='/top_up'">Пополнение</button>
+                <button class="dropdown-item" onclick="window.location.href='/withdraw'">Вывод средств</button>
+                <button class="dropdown-item" onclick="window.location.href='/balance_history'">История баланса игр</button>
+                <form action="{{ url_for('logout') }}">
+                    <button type="submit" class="dropdown-item">Выйти</button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">
+                        <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        <h1>Главная страница</h1>
+        <div class="menu-options">
+            <button onclick="showCreateRoom()" class="button">Создать комнату</button>
+            <button class="button">Список комнат (Фильтр)</button>
+            <button class="button disabled">Турниры (в разработке)</button>
+        </div>
+
+        <!-- Form for creating a room -->
+        <div id="create-room-form" class="form hidden">
+            <h2>Создание комнаты</h2>
+            <div id="room-errors" class="flash error hidden"></div> <!-- Контейнер для ошибок -->
+            <form id="create-room" method="POST" action="/create_room" onsubmit="return validateBlinds(event)">
+                <label for="players">Количество игроков:</label>
+                <input type="number" id="players" name="players" min="2" max="10" required>
+                
+                <label for="blinds">Блайнды:</label>
+                <input type="text" id="blinds" name="blinds" placeholder="Например, 50/100" required>
+        
+                <label for="mode">Режим игры:</label>
+                <select id="mode" name="mode">
+                    <option value="poker" selected>Покер</option>
+                </select>
+        
+                <button type="submit" class="submit-btn">Создать</button>
+            </form>
+        </div>
+
+        <script>
+            function validateBlinds(event) {
+                const errorsContainer = document.getElementById('room-errors');
+                errorsContainer.classList.add('hidden');
+                errorsContainer.innerHTML = ''; // Очистка предыдущих ошибок
+            
+                const blindsInput = document.getElementById('blinds').value.trim();
+                const blindsPattern = /^\d+\/\d+$/; // Регулярное выражение для формата "число/число"
+            
+                if (!blindsPattern.test(blindsInput)) {
+                    displayError('Введите блайнды в формате "Малый/Большой", например "50/100".');
+                    event.preventDefault(); // Предотвращает отправку формы
+                    return false;
+                }
+            
+                const [smallBlind, bigBlind] = blindsInput.split('/').map(Number);
+                if (smallBlind <= 0 || bigBlind <= 0 || smallBlind >= bigBlind) {
+                    displayError('Малый блайнд должен быть меньше большого и оба должны быть положительными.');
+                    event.preventDefault();
+                    return false;
+                }
+            
+                return true; // Продолжить отправку формы
+            }
+            
+            function displayError(message) {
+                const errorsContainer = document.getElementById('room-errors');
+                errorsContainer.innerHTML = `<span class="close-btn" onclick="this.parentElement.style.display='none';">×</span> ${message}`;
+                errorsContainer.classList.remove('hidden');
+            }
+            </script>
+
+        <!-- Room List -->
+        <div id="room-list-container">
+            <h2>Список комнат</h2>
+            <div id="room-list">
+                <!-- Список комнат будет загружаться сюда -->
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+    // Toggle create room form visibility
+    function showCreateRoom() {
+        document.getElementById('create-room-form').classList.toggle('hidden');
+    }
+
+    // Функция для отправки формы создания комнаты через AJAX
+    function submitRoom(event) {
+        event.preventDefault();  // Prevent the form from submitting traditionally
+
+        const formData = new FormData(document.getElementById('create-room'));
+        
+        fetch('/create_room', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            // Обновить список комнат после успешного создания
+            loadRooms();
+            // Скрыть форму создания комнаты
+            document.getElementById('create-room-form').classList.add('hidden');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Функция для загрузки списка комнат
+    function loadRooms() {
+        fetch('/get_rooms')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('room-list').innerHTML = data;
+            });
+    }
+
+    // Загружаем список комнат при загрузке страницы
+    window.onload = function() {
+        loadRooms();
+        // Обновление списка комнат каждые 1 секунду (1000 мс)
+        setInterval(loadRooms, 1000); // 1000 мс = 1 секунда
+    };
+
+    // Toggle the settings menu
+    document.getElementById('settings-button').addEventListener('click', function() {
+        document.getElementById('settings-menu').classList.toggle('show');
+    });
+
+    // Close the settings menu if clicked outside
+    window.onclick = function(event) {
+        if (!event.target.matches('#settings-button') && !event.target.matches('.settings-btn')) {
+            var dropdowns = document.getElementsByClassName('dropdown');
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    };
+</script>
+</body>
+</html>

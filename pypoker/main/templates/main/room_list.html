@@ -1,0 +1,7 @@
+<ul>
+    {% for room in rooms %}
+        <li>
+            <strong>Комната {{ room[0] }}</strong> - {{ room[1] }} игроков, Блайнды: {{ room[2] }}, Режим: {{ room[3] }}, Создатель: {{ room[4] }}
+        </li>
+    {% endfor %}
+</ul>

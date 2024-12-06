@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход и Регистрация</title>
+  <link rel="stylesheet" href="{% static 'main/styles/styles.css' %}">
+</head>
+<body>
+  <div class="container">
+    <h2 id="form-title">Вход</h2>
+    
+    <!-- Форма входа -->
+    <form action="{{ url_for('login') }}" method="post" id="login-form">
+      <input type="text" name="username" placeholder="Логин" required>
+      <input type="password" name="password" placeholder="Пароль" required>
+      <button type="submit">Войти</button>
+      <p>Нет аккаунта? <a href="#" onclick="toggleForms('register')">Зарегистрироваться</a></p>
+    </form>
+
+    <!-- Форма регистрации (изначально скрыта) -->
+    <form action="{{ url_for('register') }}" method="post" id="register-form" style="display: none;">
+      <input type="text" name="username" placeholder="Логин" required>
+      <input type="password" name="password" placeholder="Пароль" required>
+      <button type="submit">Зарегистрироваться</button>
+      <p>Уже есть аккаунт? <a href="#" onclick="toggleForms('login')">Войти</a></p>
+    </form>
+
+    <!-- Сообщения -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flash-messages_1">
+          {% for category, message in messages %}
+            <li class="{{ category }}">{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+  </div>
+  
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

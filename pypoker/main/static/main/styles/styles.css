@@ -1,0 +1,609 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body, html {
+  height: 100%;
+  background-color: #000000; /* Черный фон */
+  color: #ffffff; /* Белый текст */
+  overflow-y: scroll; /* Включаем вертикальную прокрутку */
+}
+
+.container {
+
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+/* Фиксированный верхний блок */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #1c1c1c; /* Фон для верхней панели */
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+}
+
+h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+  color: #333333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* Установлено в 100%, чтобы формы были одинаковыми */
+}
+
+form input[type="text"],
+form input[type="password"],
+form button {
+  width: 100%; /* Растягиваем элементы на всю ширину формы */
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #4CAF50;
+  background-color: #ffffff;
+  outline: none;
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+p {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+}
+
+p a {
+  color: #4CAF50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+.flash-messages_1 {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 14px;
+  color: #721c24;
+  background-color: #721c24;
+  border: 1px solid #721c24;
+  border-radius: 8px;
+  text-align: center;
+}
+
+
+
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+body, html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #000000; /* Черный фон */
+  color: #ffffff; /* Белый текст */
+}
+
+.container {
+  width: 350px;
+  padding: 30px;
+  background-color: #1c1c1c; /* Темно-серый фон для контейнера */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+}
+
+h2 {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+form input[type="text"],
+form input[type="password"],
+form button {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border-radius: 8px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+  border-color: #4CAF50;
+  background-color: #333333;
+  outline: none;
+}
+
+button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+p {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+p a {
+  color: #4CAF50;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+p a:hover {
+  text-decoration: underline;
+}
+
+.flash-messages_1 {
+  margin-top: 15px;
+  padding: 12px;
+  font-size: 14px;
+  color: #721c24;
+  background-color: #721c24;
+  border: 1px solid #721c24;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Основные стили */
+.menu-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.profile-icon {
+  font-size: 36px;
+  margin-right: 10px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.balance-info {
+  font-size: 16px;
+  color: #bbbbbb;
+}
+
+.settings-btn {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 10px 15px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+
+.settings-btn:hover {
+  background-color: #0056b3;
+}
+
+
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 40px;
+  background-color: #333333;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  z-index: 1;
+  width: 150px;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.dropdown-item {
+  background-color: #2a2a2a;
+  color: #ffffff;
+  border: none;
+  text-align: left;
+  padding: 10px 15px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #444444;
+}
+
+main {
+  margin-top: 100px; /* Отступ для фиксации пространства под фиксированным header */
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 36px;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 18px;
+  color: #bbbbbb;
+  margin-bottom: 20px;
+}
+
+/* Прокручиваемый контент */
+.content {
+  height: 1500px; /* Для демонстрации скроллинга */
+}
+
+/* Основные стили */
+.menu-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.menu-options button {
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 15px 20px;
+  font-size: 18px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.menu-options button:hover {
+  background-color: #0056b3;
+}
+
+
+.menu-options button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Медиазапрос для экранов с шириной 768px и менее */
+@media (max-width: 768px) {
+  .menu-options {
+    grid-template-columns: 1fr; /* Кнопки в одном столбце */
+  }
+
+  .menu-options button {
+    width: 100%; /* Кнопки будут растягиваться на всю ширину */
+    margin-bottom: 10px; /* Добавим небольшой отступ между кнопками */
+  }
+}
+
+/* Форма создания комнаты */
+#create-room-form {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #1c1c1c;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+}
+
+.hidden {
+  display: none;
+}
+
+form label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+form input, form select, form button {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #444;
+  border-radius: 5px;
+  background-color: #2a2a2a;
+  color: white;
+}
+
+form button {
+  background-color: #007BFF;
+  color: white;
+  font-size: 16px;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.top-up-form label {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.top-up-form input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: white;
+}
+
+
+.withdraw-form label {
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.withdraw-form input {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: white;
+}
+
+
+.btn {
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.back-button {
+  display: block;
+  margin-top: 10px;
+  text-align: center;
+  background-color: #6c757d;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+.flash-messages {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  z-index: 1000;
+}
+
+.flash {
+  padding: 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  position: relative;
+  animation: fadeInOut 5s ease-out forwards;
+}
+
+.flash.success {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.flash.error {
+  background-color: #f44336;
+  color: white;
+}
+
+.flash.info {
+  background-color: #2196F3;
+  color: white;
+}
+
+.flash .close-btn {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 18px;
+  color: white;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+@keyframes fadeInOut {
+  0% {
+      opacity: 0;
+      transform: translateY(-20px);
+  }
+  10% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+  90% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+  100% {
+      opacity: 0;
+      transform: translateY(20px);
+  }
+}
+
+.room-item {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+/* Styles for other elements */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+}
+
+button {
+  cursor: pointer;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button.disabled {
+  background-color: #d3d3d3;
+  cursor: not-allowed;
+}
+
+button:disabled:hover {
+  background-color: #d3d3d3;
+}
+body {
+  font-family: Arial, sans-serif;
+}
+
+.menu-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.profile-icon {
+  margin-right: 10px;
+}
+
+.settings {
+  position: relative;
+}
+
+.settings-btn {
+  background-color: #007BFF;
+  color: white;
+}
+
+.dropdown {
+  display: none;
+}
+
+.dropdown.show {
+  display: block;
+}
+
+.room-item {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+}

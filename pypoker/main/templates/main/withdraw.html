@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вывод средств</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Вывод средств</h1>
+        </header>
+
+        <main>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash {{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <h1>Текущий баланс: <strong>{{ balance }}₽</strong></h1> 
+
+            <form method="POST" action="{{ url_for('withdraw') }}" class="withdraw-form">
+                <h2 for="amount">Сумма вывода:</h2>
+                <input type="number" id="amount" name="amount" min="1" required>
+
+                <button type="submit" class="btn">Вывести</button>
+            </form>
+            <a href="{{ url_for('menu') }}" class="btn back-button">Назад в меню</a>
+        </main>
+    </div>
+</body>
+</html>
