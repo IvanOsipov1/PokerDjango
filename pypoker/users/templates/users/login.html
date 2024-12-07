@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'main/styles/styles.css' %}">
+</head>
+<body>
+<div class="container">
+    <h2>Вход</h2>
+    {% if messages %}
+        <div class="flash-messages_1">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post">
+        {% csrf_token %}
+        <input type="text" name="username" placeholder="Логин" required>
+        <input type="password" name="password" placeholder="Пароль" required>
+        <button type="submit">Войти</button>
+    </form>
+    <p>Нет аккаунта? <a href="{% url 'users:register' %}">Зарегистрироваться</a></p>
+</div>
+</body>
+</html>
