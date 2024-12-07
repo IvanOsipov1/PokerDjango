@@ -1,7 +1,17 @@
 <ul>
     {% for room in rooms %}
-        <li>
-            <strong>Комната {{ room[0] }}</strong> - {{ room[1] }} игроков, Блайнды: {{ room[2] }}, Режим: {{ room[3] }}, Создатель: {{ room[4] }}
-        </li>
+        {% with room.0 as room_number %}
+        {% with room.1 as player_count %}
+        {% with room.2 as blinds %}
+        {% with room.3 as mode %}
+        {% with room.4 as creator %}
+            <li>
+                <strong>Комната {{ room_number }}</strong> - {{ player_count }} игроков, Блайнды: {{ blinds }}, Режим: {{ mode }}, Создатель: {{ creator }}
+            </li>
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
     {% endfor %}
 </ul>

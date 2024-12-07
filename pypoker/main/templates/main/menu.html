@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная страница</title>
-   <link rel="stylesheet" href="{% static main/styles/styles.css %}">
+   <link rel="stylesheet" href="{% static 'main/styles/styles.css' %}">
     <style>
         .dropdown {
             display: none;
@@ -33,26 +33,24 @@
                 <button class="dropdown-item" onclick="window.location.href='/top_up'">Пополнение</button>
                 <button class="dropdown-item" onclick="window.location.href='/withdraw'">Вывод средств</button>
                 <button class="dropdown-item" onclick="window.location.href='/balance_history'">История баланса игр</button>
-                <form action="{{ url_for('logout') }}">
-                    <button type="submit" class="dropdown-item">Выйти</button>
-                </form>
+                <a href="{% url 'logout' %}">
+                    <button type="button" class="dropdown-item">Выйти</button>
+                </a>
             </div>
         </div>
     </header>
 
     <!-- Flash messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-messages">
-                {% for category, message in messages %}
-                    <div class="flash {{ category }}">
-                        <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
-                        {{ message }}
-                    </div>
-                {% endfor %}
+    {% if messages %}
+    <div class="flash-messages">
+        {% for message in messages %}
+            <div class="flash {{ message.tags }}">
+                <span class="close-btn" onclick="this.parentElement.style.display='none';">×</span>
+                {{ message }}
             </div>
-        {% endif %}
-    {% endwith %}
+        {% endfor %}
+    </div>
+{% endif %}
 
     <!-- Main Content -->
     <main>
