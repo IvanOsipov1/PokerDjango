@@ -1,7 +1,10 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, get_user_model
+
+
+User = get_user_model()
 
 
 def login_user(request):
@@ -23,4 +26,32 @@ def logout_user(request):
 
 
 def register(request):
-    return HttpResponse('reg')
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        # Проверка совпадения паролей
+        if password != confirm_password:
+            messages.error(request, 'Пароли не совпадают.')
+            return render(request, 'users/register.html')
+
+        # Проверка, занят ли никнейм
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Имя пользователя уже занято.')
+            return render(request, 'users/register.html')
+
+        # Проверка, занята ли почта
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Эта почта уже используется.')
+            return render(request, 'users/register.html')
+
+        # Создание пользователя
+        user = User.objects.create_user(username=username, email=email, password=password)
+        user.save()
+        messages.success(request, 'Регистрация успешна. Теперь вы можете войти.')
+        login(request, user)
+        return redirect('users:login')
+
+    return render(request, 'users/register.html')

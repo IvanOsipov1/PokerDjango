@@ -1,28 +1,33 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Регистрация</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="{% static 'main/styles/styles.css' %}">
 </head>
 <body>
 <div class="container">
     <h2>Регистрация</h2>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
+
+    {% if messages %}
         <div class="flash-messages">
-          {% for message in messages %}
-            <p>{{ message }}</p>
-          {% endfor %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
         </div>
-      {% endif %}
-    {% endwith %}
+    {% endif %}
+
     <form method="post">
+        {% csrf_token %}
         <input type="text" name="username" placeholder="Логин" required>
+        <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Пароль" required>
+        <input type="password" name="confirm_password" placeholder="Повторите пароль" required>
         <button type="submit">Зарегистрироваться</button>
     </form>
-    <p>Уже есть аккаунт? <a href="{{ url_for('login') }}">Войти</a></p>
+
+    <p>Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a></p>
 </div>
 </body>
 </html>
