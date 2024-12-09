@@ -8,10 +8,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pypoker/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/db.sqlite3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pypoker/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pypoker/pypoker/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/pypoker/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pypoker/pypoker/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/pypoker/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pypoker/users/templates/users/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/users/templates/users/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pypoker/users/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/users/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
