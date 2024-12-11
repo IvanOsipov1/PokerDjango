@@ -9,6 +9,6 @@ urlpatterns = [
     path('get_rooms', views.get_rooms, name='get_rooms'),
     path('index/', views.index),
     path('create_room', views.create_room, name='create_room'),
-    path('rooms/<uuid:room_id>/', views.room_detail, name='room_detail'),
+
     #path('create_room/', views.create_room, name='create_room'),
 ]

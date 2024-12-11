@@ -38,7 +38,7 @@ def create_room(request):
 # Представление для отображения комнаты по уникальному идентификатору
 def room_detail(request, room_id):
     room = get_object_or_404(Room, unique_id=room_id)
-    return render(request, 'main/room_detail.html', {'room': room})
+    return render(request, 'main/testroom.html', {'room': room})
 
 # Представление для списка комнат
 def get_rooms(request):
