@@ -1,0 +1,15 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Комната {{ room.name }}</title>
+    <link rel="stylesheet" href="{% static 'main/styles/styles.css' %}">
+</head>
+<body>
+    <h1>Комната {{ room.name }}</h1>
+    <p>Максимальное количество игроков: {{ room.max_players }}</p>
+    <p>Блайнды: {{ room.blinds }}</p>
+    <p>Уникальный ID: {{ room.unique_id }}</p>
+</body>
+</html>

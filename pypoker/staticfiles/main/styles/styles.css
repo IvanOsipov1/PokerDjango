@@ -9,7 +9,7 @@ body, html {
   height: 100%;
   background-color: #000000; /* Черный фон */
   color: #ffffff; /* Белый текст */
-  overflow-y: scroll; /* Включаем вертикальную прокрутку */
+
 }
 
 .container {

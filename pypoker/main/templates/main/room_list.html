@@ -1,17 +1,9 @@
-<ul>
-    {% for room in rooms %}
-        {% with room.0 as room_number %}
-        {% with room.1 as player_count %}
-        {% with room.2 as blinds %}
-        {% with room.3 as mode %}
-        {% with room.4 as creator %}
-            <li>
-                <strong>Комната {{ room_number }}</strong> - {{ player_count }} игроков, Блайнды: {{ blinds }}, Режим: {{ mode }}, Создатель: {{ creator }}
-            </li>
-        {% endwith %}
-        {% endwith %}
-        {% endwith %}
-        {% endwith %}
-        {% endwith %}
-    {% endfor %}
-</ul>
+{% for room in rooms %}
+    <div class="room">
+        <p>Комната: {{ room.name }}</p>
+        <p>Блайнды: {{ room.blinds }}</p>
+        <a href="{% url 'room_detail' room_id=room.unique_id %}">Перейти в комнату</a>
+    </div>
+{% empty %}
+    <p>Нет созданных комнат</p>
+{% endfor %}

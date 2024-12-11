@@ -5,10 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3a6bcd61-0a29-46ac-aefd-9510847d54ec" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pypoker/main/templates/main/room_detail.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pypoker/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/db.sqlite3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/main/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/main/static/main/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/static/main/styles/styles.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/main/templates/main/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/templates/main/menu.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/main/templates/main/room_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/templates/main/room_list.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pypoker/main/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pypoker/main/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/main/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pypoker/staticfiles/main/styles/styles.css" beforeDir="false" afterPath="$PROJECT_DIR$/pypoker/staticfiles/main/styles/styles.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
