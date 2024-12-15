@@ -42,6 +42,9 @@ INSTALLED_APPS = [
     'main',
     'users',
     'rooms',
+
+    'channels',
+
 ]
 
 MIDDLEWARE = [
@@ -73,6 +76,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'pypoker.wsgi.application'
+ASGI_APPLICATION = 'pypoker.asgi.application'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 # Database
@@ -134,3 +138,11 @@ STATICFILES_DIRS = [
     "/var/www/static/"
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],  # Адрес и порт Redis
+        },
+    },
+}

@@ -1,95 +1,56 @@
-<!-- room_2_players.html -->
 {% extends 'rooms/room_details.html' %}
+{% block content %}
+    <!-- Места игроков -->
+    {% for seat in seats %}
+    <div class="player-seat" id="seat-{{ seat }}">
+        <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
+    </div>
+    {% endfor %}
 
-<div class="table-container">
-  <!-- Место игрока 1 -->
-  <div class="player-seat" id="seat-1">
-    {% if room.players.all|length > 0 %}
-      <div class="player-info">
-        <span>{{ room.players.all.0.user.username }}</span>
-        <span>Stack: {{ room.players.all.0.stack }}</span>
-      </div>
-    {% else %}
-      <button class="sit-btn" data-seat="1">SIT</button>
-    {% endif %}
-  </div>
+    <!-- Модальное окно -->
+    <div id="buy-in-modal" style="display: none;">
+        <form id="buy-in-form">
+            <h2>BUY IN</h2>
+            <label for="stack">Enter stack amount:</label>
+            <input type="number" id="stack" required>
+            <button type="submit">Take the seat</button>
+        </form>
+    </div>
 
-  <!-- Место игрока 2 -->
-  <div class="player-seat" id="seat-2">
-    {% if room.players.all|length > 1 %}
-      <div class="player-info">
-        <span>{{ room.players.all.1.user.username }}</span>
-        <span>Stack: {{ room.players.all.1.stack }}</span>
-      </div>
-    {% else %}
-      <button class="sit-btn" data-seat="2">SIT</button>
-    {% endif %}
-  </div>
-</div>
+    <script>
+        const roomId = "{{ room.unique_id }}";
+        const socket = new WebSocket(`ws://${window.location.host}/ws/room/${roomId}/`);
+        const modal = document.getElementById('buy-in-modal');
+        const form = document.getElementById('buy-in-form');
+        let currentSeat = null;
 
-<!-- Диалоговое окно -->
-<div id="buy-in-modal" style="display: none;">
-  <form id="buy-in-form">
-    <h2>BUY IN</h2>
-    <label for="stack">Enter stack amount:</label>
-    <input type="number" id="stack" name="stack" required>
-    <button type="submit">Take the seat</button>
-  </form>
-</div>
+        document.querySelectorAll('.sit-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                currentSeat = button.getAttribute('data-seat');
+                modal.style.display = 'block';
+            });
+        });
 
-document.addEventListener('DOMContentLoaded', function () {
-  const sitButtons = document.querySelectorAll('.sit-btn');
-  const modal = document.getElementById('buy-in-modal');
-  const buyInForm = document.getElementById('buy-in-form');
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            const stack = document.getElementById('stack').value;
+            socket.send(JSON.stringify({
+                action: 'sit',
+                seat: currentSeat,
+                stack: stack
+            }));
+            modal.style.display = 'none';
+        };
 
-  sitButtons.forEach((button) => {
-    button.addEventListener('click', function () {
-      const seat = this.getAttribute('data-seat');
-      modal.style.display = 'block';
-
-      // Отправка данных на сервер при подтверждении
-      buyInForm.onsubmit = function (e) {
-        e.preventDefault();
-        const stack = document.getElementById('stack').value;
-
-        fetch(`/rooms/join_room/`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken'),
-          },
-          body: JSON.stringify({ seat, stack }),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              // Обновляем место: скрываем кнопку SIT и отображаем игрока
-              button.style.display = 'none';
-              const playerSeat = document.getElementById(`seat-${seat}`);
-              playerSeat.innerHTML = `<div class="player-info">
-                <span>${data.username}</span>
-                <span>Stack: ${data.stack}</span>
-              </div>`;
-              modal.style.display = 'none';
+        socket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            if (data.action === 'player_join') {
+                const seat = document.getElementById(`seat-${data.seat}`);
+                seat.innerHTML = `<div class="player-info">
+                    <span>${data.username}</span>
+                    <span>Stack: ${data.stack}</span>
+                </div>`;
             }
-          });
-      };
-    });
-  });
-
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === name + '=') {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
-  }
-});
-
+        };
+    </script>
+{% endblock %}

@@ -7,7 +7,7 @@ class Room(models.Model):
     max_players = models.PositiveIntegerField(default=10)
     blinds = models.CharField(max_length=20)
     unique_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    # players = models.ManyToManyField(User)
+
 
 
     def __str__(self):

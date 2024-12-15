@@ -1,183 +1,157 @@
-
+/* Общие стили для страницы */
 body {
     margin: 0;
     padding: 0;
-    background-image: url("/static/rooms/jpg/background.jpg"); /* Укажите путь к вашей картинке */
-    background-size: cover; /* Картинка полностью покрывает экран */
-    background-position: center; /* Центрирует изображение */
+    background-image: url("/static/rooms/jpg/background.jpg"); /* Фоновое изображение */
+    background-size: cover; /* Изображение покрывает весь экран */
+    background-position: center; /* Центрирование изображения */
     font-family: Arial, sans-serif;
     color: white;
     text-align: center;
     height: 100vh; /* Высота страницы равна высоте экрана */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: center; /* Центрирование содержимого */
+    align-items: center; /* Выравнивание по горизонтали */
+    position: relative; /* Устанавливаем относительное позиционирование */
+    overflow: hidden; /* Чтобы контент не вылезал за пределы */
 }
 
-.settings-icon {
-    position: absolute;
-    top: 20px; /* Отступ от верхнего края */
-    right: 40px; /* Отступ от правого края */
-    width: 140px; /* Увеличенная ширина */
-    height: 40px; /* Увеличенная высота */
-    background-color: #007BFF;
-    color: white;
-    font-size: 18px;
+/* Контейнер стола */
+.table-container {
     display: flex;
+    flex-direction: column; /* Вертикальное направление */
+    justify-content: space-between; /* Разделяем кнопки максимально */
+    align-items: center; /* Центрируем по горизонтали */
+    height: 95%; /* Увеличиваем высоту контейнера почти на весь экран */
+    width: 60%; /* Ширина контейнера */
+    padding: 0; /* Убираем внутренние отступы */
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон для видимости */
+    border-radius: 15px;
+    position: relative; /* Контейнер расположен относительно body */
+    z-index: 10; /* Высокий z-index, чтобы быть над фоном */
+}
+
+/* Стили для мест игроков */
+.player-seat {
+    display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 20px; /* Радиус для овальной формы */
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s, transform 0.2s; /* Добавляем эффект при наведении */
+    width: 150px;
+    height: 150px;
+    background-color: rgba(255, 255, 255, 0.1); /* Полупрозрачный фон для мест */
+    border: 2px solid white;
+    border-radius: 50%; /* Круглые места */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: absolute; /* Абсолютное позиционирование внутри контейнера */
 }
 
-.settings-icon:hover {
-    background-color: #0056b3; /* Более тёмный цвет при наведении */
+/* Верхняя кнопка (место игрока 1) */
+#seat-1 {
+    top: 5%; /* Располагаем почти в самом верху */
+    left: 50%; /* Центрируем по горизонтали */
+    transform: translateX(-50%); /* Для точного центрирования */
+}
+
+/* Нижняя кнопка (место игрока 2) */
+#seat-2 {
+    bottom: 5%; /* Располагаем почти в самом низу */
+    left: 50%; /* Центрируем по горизонтали */
+    transform: translateX(-50%); /* Для точного центрирования */
+}
+
+
+
+
+
+/* Кнопки SIT */
+.sit-btn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #007BFF; /* Синий цвет кнопки */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: transform 0.2s, background-color 0.2s;
+    z-index: 20; /* Кнопки поверх всего */
+}
+
+/* Hover-эффект для кнопок */
+.sit-btn:hover {
+    background-color: #0056b3; /* Темнее при наведении */
     transform: scale(1.1); /* Увеличение при наведении */
 }
 
-
-.user-container {
-    display: flex;
-    flex-direction: column; /* Располагаем элементы друг под другом */
-    align-items: center; /* Центрируем текст под иконкой */
-    gap: 0; /* Убираем расстояние между иконкой и подписью */
-    margin-top: 600px; /* Отступ от верхнего контента */
+/* Анимация при клике */
+.sit-btn:active {
+    transform: scale(1.05);
+    background-color: #00408d; /* Еще темнее при клике */
 }
 
-.user-icon {
-    width: 80px;
-    height: 80px; /* Высота и ширина иконки */
-    background-color: #007BFF;
+/* Информация о игроке */
+.player-info {
+    text-align: center;
+    font-size: 14px;
     color: white;
-    font-size: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    border: 2px solid white;
 }
 
-.username {
-    font-size: 14px; /* Размер текста подписи */
-    margin: 0; /* Полное отсутствие отступов */
-    line-height: 1; /* Уменьшаем интерлиньяж */
-    padding: 0; /* Убираем внутренние отступы */
+/* Для обеспечения видимости всего */
+* {
+    box-sizing: border-box;
 }
 
-.button-container {
+/* Затемнение фона при открытии модального окна */
+#modal-overlay {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    background-color: #333; /* Серый фон для кнопок */
-    padding: 20px 0;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5); /* Тень для визуального отделения */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    z-index: 999; /* Ниже модального окна, но выше остального контента */
 }
 
-button {
-    padding: 10px 20px;
+/* Модальное окно */
+#buy-in-modal {
+    display: none; /* Скрыто по умолчанию */
+    position: fixed; /* Фиксированное для центрирования */
+    top: 50%; /* Центрирование по вертикали */
+    left: 50%; /* Центрирование по горизонтали */
+    transform: translate(-50%, -50%); /* Смещение для точного центрирования */
+    background-color: rgba(255, 255, 255, 0.9); /* Светлый фон */
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1000; /* Выше затемнения */
+    color: black; /* Контрастный текст */
+    width: 300px; /* Ширина окна */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Тень */
+    text-align: center;
+}
+
+/* Кнопка внутри модального окна */
+#buy-in-modal button {
     background-color: #007BFF;
     color: white;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
-button:hover {
+#buy-in-modal button:hover {
     background-color: #0056b3;
 }
 
-.dropdown-menu {
-    display: none; /* Меню скрыто по умолчанию */
-    position: absolute;
-    top: 60px; /* Расстояние от кнопки настроек */
-    right: 40px; /* Увеличиваем расстояние от правого края */
-    width: 140px; /* Увеличенная ширина */
-    background-color: #333;
-    color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    overflow: hidden;
-}
-
-.dropdown-item {
-    width: 100%;
-    padding: 10px 20px;
-    background: none;
-    border: none;
-    color: white;
-    text-align: left; /* Текст выравнен по левому краю */
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.dropdown-item:hover {
-    background-color: #444; /* Темный фон при наведении */
-}
-
-.table-container {
-    position: relative;
-    width: 100%;
-    height: 80vh;
-    background-image: url("/static/rooms/jpg/background.jpg");
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.player-seat {
-    position: absolute;
-    width: 100px;
-    height: 150px;
-    text-align: center;
-    color: white;
-}
-
-.player-avatar {
-    width: 60px;
-    height: 60px;
-    background-color: #007BFF;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 10px;
-    font-size: 18px;
-}
-
-.player-cards {
-    font-size: 24px;
-    margin-bottom: 5px;
-}
-
-.player-stack {
-    font-size: 16px;
-}
-
-/* Позиции игроков */
-.top-seat {
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.bottom-seat {
-    bottom: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-.left-seat {
-    left: 10%;
-    top: 50%;
-    transform: translateY(-50%);
+/* Видимое состояние для модального окна и затемнения */
+.modal-active #modal-overlay,
+.modal-active #buy-in-modal {
+    display: block;
 }

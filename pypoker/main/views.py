@@ -35,10 +35,12 @@ def create_room(request):
         return JsonResponse({'room_id': room.unique_id})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 
+
 # Представление для отображения комнаты по уникальному идентификатору
 def room_detail(request, room_id):
     room = get_object_or_404(Room, unique_id=room_id)
     return render(request, 'main/testroom.html', {'room': room})
+
 
 # Представление для списка комнат
 def get_rooms(request):
