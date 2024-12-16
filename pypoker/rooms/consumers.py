@@ -2,6 +2,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth import get_user_model
 from django.apps import apps
+from asgiref.sync import sync_to_async
 
 
 
@@ -14,7 +15,7 @@ def get_room_player_model():
 
 class RoomConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.room_id = self.scope['url_route']['kwargs']['room_id']
+        self.room_id = self.scope['url_route']['kwargs']['unique_id']
         self.room_group_name = f"room_{self.room_id}"
 
         await self.channel_layer.group_add(
@@ -22,6 +23,21 @@ class RoomConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+
+        # Получаем текущих игроков для комнаты
+        RoomPlayer = get_room_player_model()
+        players = await sync_to_async(list)(
+            RoomPlayer.objects.filter(room__unique_id=self.room_id).values(
+                'user__username', 'seat_number', 'stack'
+            )
+        )
+        for player in players:
+            player['stack'] = float(player['stack'])
+        # Отправляем информацию о текущих игроках клиенту
+        await self.send(text_data=json.dumps({
+            'action': 'load_players',
+            'players': players
+        }))
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard(
@@ -75,5 +91,5 @@ class RoomConsumer(AsyncWebsocketConsumer):
             user=user,
             room=room,
             seat_number=seat_number,
-            balance_at_table=stack
+            stack=stack
         )

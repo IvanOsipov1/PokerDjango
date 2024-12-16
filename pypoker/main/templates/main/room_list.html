@@ -2,7 +2,7 @@
     <div class="room">
         <p>Комната: {{ room.name }}</p>
         <p>Блайнды: {{ room.blinds }}</p>
-        <a href="{% url 'room_detail' room_id=room.unique_id %}">Перейти в комнату</a>
+        <a href="{% url 'room_detail' unique_id=room.unique_id %}">Перейти в комнату</a>
     </div>
 {% empty %}
     <p>Нет созданных комнат</p>

@@ -5,7 +5,7 @@ from channels.auth import AuthMiddlewareStack
 import rooms.routing  # Подключаем маршруты из приложения
 
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pypoker.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),  # HTTP запросы обрабатываются как обычно

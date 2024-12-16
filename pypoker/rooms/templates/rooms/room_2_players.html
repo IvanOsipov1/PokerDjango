@@ -1,10 +1,20 @@
 {% extends 'rooms/room_details.html' %}
+
 {% block content %}
     <!-- Места игроков -->
     {% for seat in seats %}
-    <div class="player-seat" id="seat-{{ seat }}">
-        <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
-    </div>
+        {% with players|dictsort:"seat_number"|first as player %}
+            <div class="player-seat" id="seat-{{ seat }}">
+                {% if player %}
+                    <div class="player-info">
+                        <span>{{ player.user.username }}</span>
+                        <span>Stack: {{ player.stack }}</span>
+                    </div>
+                {% else %}
+                    <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
+                {% endif %}
+            </div>
+        {% endwith %}
     {% endfor %}
 
     <!-- Модальное окно -->
@@ -50,6 +60,14 @@
                     <span>${data.username}</span>
                     <span>Stack: ${data.stack}</span>
                 </div>`;
+            } else if (data.action === 'load_players') {
+                data.players.forEach(player => {
+                    const seat = document.getElementById(`seat-${player.seat_number}`);
+                    seat.innerHTML = `<div class="player-info">
+                        <span>${player.user__username}</span>
+                        <span>Stack: ${player.stack}</span>
+                    </div>`;
+                });
             }
         };
     </script>
