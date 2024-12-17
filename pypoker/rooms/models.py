@@ -22,7 +22,10 @@ class RoomPlayer(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ['room', 'seat_number']
+        constraints = [
+            models.UniqueConstraint(fields=['room', 'user'], name='unique_user_in_room'),
+            models.UniqueConstraint(fields=['room', 'seat_number'], name='unique_seat_in_room')
+        ]
 
     def __str__(self):
         return f"{self.user.username} in {self.room.name} (Seat {self.seat_number})"

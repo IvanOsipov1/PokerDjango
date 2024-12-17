@@ -1,13 +1,13 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
-from django.contrib.auth import get_user_model
 from django.apps import apps
 from asgiref.sync import sync_to_async
-
+from django.db import transaction
 
 
 def get_room_model():
     return apps.get_model('main', 'Room')
+
 
 def get_room_player_model():
     return apps.get_model('rooms', 'RoomPlayer')
@@ -33,6 +33,7 @@ class RoomConsumer(AsyncWebsocketConsumer):
         )
         for player in players:
             player['stack'] = float(player['stack'])
+
         # Отправляем информацию о текущих игроках клиенту
         await self.send(text_data=json.dumps({
             'action': 'load_players',
@@ -57,6 +58,14 @@ class RoomConsumer(AsyncWebsocketConsumer):
             if user.is_authenticated:
                 Room = get_room_model()
                 room = await Room.objects.aget(unique_id=self.room_id)
+
+                # Проверка, что игрок уже сидит за каким-либо местом в этой комнате
+                if await self.player_already_in_room(room, user):
+                    await self.send(text_data=json.dumps({
+                        'action': 'error',
+                        'message': 'You are already seated at this table!'
+                    }))
+                    return
 
                 if not await self.seat_taken(room, seat_number):
                     await self.create_player(user, room, seat_number, stack)
@@ -85,11 +94,35 @@ class RoomConsumer(AsyncWebsocketConsumer):
         return await RoomPlayer.objects.filter(room=room, seat_number=seat_number).aexists()
 
     @staticmethod
-    async def create_player(user, room, seat_number, stack):
+    async def player_already_in_room(room, user):
         RoomPlayer = get_room_player_model()
-        await RoomPlayer.objects.acreate(
-            user=user,
-            room=room,
-            seat_number=seat_number,
-            stack=stack
-        )
+        return await RoomPlayer.objects.filter(room=room, user=user).aexists()
+
+    async def create_player(self, user, room, seat_number, stack):
+        RoomPlayer = get_room_player_model()
+
+        def create_player_sync():
+            with transaction.atomic():
+                # Проверка наличия игрока в комнате перед созданием
+                if RoomPlayer.objects.filter(room=room, user=user).exists():
+                    return {'error': 'You are already seated at this table!'}
+
+                # Проверка занятости места
+                if RoomPlayer.objects.filter(room=room, seat_number=seat_number).exists():
+                    return {'error': 'This seat is already taken!'}
+
+                # Создание игрока
+                RoomPlayer.objects.create(
+                    user=user,
+                    room=room,
+                    seat_number=seat_number,
+                    stack=stack
+                )
+
+        result = await sync_to_async(create_player_sync)()
+
+        if result and 'error' in result:
+            await self.send(text_data=json.dumps({
+                'action': 'error',
+                'message': result['error']
+            }))

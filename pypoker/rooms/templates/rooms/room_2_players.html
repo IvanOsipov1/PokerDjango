@@ -1,20 +1,24 @@
+
 {% extends 'rooms/room_details.html' %}
 
 {% block content %}
+
     <!-- Места игроков -->
-    {% for seat in seats %}
-        {% with players|dictsort:"seat_number"|first as player %}
-            <div class="player-seat" id="seat-{{ seat }}">
-                {% if player %}
-                    <div class="player-info">
-                        <span>{{ player.user.username }}</span>
-                        <span>Stack: {{ player.stack }}</span>
-                    </div>
-                {% else %}
-                    <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
-                {% endif %}
-            </div>
-        {% endwith %}
+     {% for seat in seats %}
+        <div class="player-seat" id="seat-{{ seat }}">
+            {% with players|dictsort:"seat_number" as sorted_players %}
+                {% with sorted_players|first as player %}
+                    {% if player and player.seat_number == seat %}
+                        <div class="player-info">
+                            <span>{{ player.user.username }}</span>
+                            <span>Stack: {{ player.stack }}</span>
+                        </div>
+                    {% else %}
+                        <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
+                    {% endif %}
+                {% endwith %}
+            {% endwith %}
+        </div>
     {% endfor %}
 
     <!-- Модальное окно -->
@@ -53,22 +57,26 @@
         };
 
         socket.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            if (data.action === 'player_join') {
-                const seat = document.getElementById(`seat-${data.seat}`);
-                seat.innerHTML = `<div class="player-info">
-                    <span>${data.username}</span>
-                    <span>Stack: ${data.stack}</span>
-                </div>`;
-            } else if (data.action === 'load_players') {
-                data.players.forEach(player => {
-                    const seat = document.getElementById(`seat-${player.seat_number}`);
-                    seat.innerHTML = `<div class="player-info">
-                        <span>${player.user__username}</span>
-                        <span>Stack: ${player.stack}</span>
-                    </div>`;
-                });
-            }
-        };
+    const data = JSON.parse(e.data);
+
+    if (data.action === 'error') {
+        alert(data.message);  // Показываем сообщение об ошибке
+    } else if (data.action === 'player_join') {
+        const seat = document.getElementById(`seat-${data.seat}`);
+        seat.innerHTML = `<div class="player-info">
+            <span>${data.username}</span>
+            <span>Stack: ${data.stack}</span>
+        </div>`;
+    } else if (data.action === 'load_players') {
+        data.players.forEach(player => {
+            const seat = document.getElementById(`seat-${player.seat_number}`);
+            seat.innerHTML = `<div class="player-info">
+                <span>${player.user__username}</span>
+                <span>Stack: ${player.stack}</span>
+            </div>`;
+        });
+    }
+};
+
     </script>
 {% endblock %}
