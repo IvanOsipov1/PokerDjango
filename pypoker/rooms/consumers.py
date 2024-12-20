@@ -4,7 +4,6 @@ from django.apps import apps
 from asgiref.sync import sync_to_async
 from django.db import transaction
 
-
 def get_room_model():
     return apps.get_model('main', 'Room')
 
@@ -70,6 +69,9 @@ class RoomConsumer(AsyncWebsocketConsumer):
                 if not await self.seat_taken(room, seat_number):
                     await self.create_player(user, room, seat_number, stack)
 
+                    # Добавляем игрока в комнату с помощью add_player
+                    await room.add_player(user)
+
                     await self.channel_layer.group_send(
                         self.room_group_name,
                         {
@@ -86,6 +88,13 @@ class RoomConsumer(AsyncWebsocketConsumer):
             'username': event['username'],
             'seat': event['seat'],
             'stack': event['stack'],
+        }))
+
+    async def game_start(self, event):
+        message = event['message']
+        await self.send(text_data=json.dumps({
+            'action': 'game_start',
+            'message': message,
         }))
 
     @staticmethod

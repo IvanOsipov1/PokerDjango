@@ -4,10 +4,12 @@ from django.db import models
 import asyncio
 from django.utils import timezone
 from django.apps import apps
+from asgiref.sync import sync_to_async
 
 
 def get_room_player_model():
     return apps.get_model('rooms', 'RoomPlayer')
+
 
 class Room(models.Model):
     name = models.CharField(max_length=255, default="Новая комната")
@@ -20,10 +22,9 @@ class Room(models.Model):
         return f"Room {self.name} - ID: {self.unique_id}"
 
     def assign_heads_up_positions(self):
-        roomplayer_set = get_room_player_model()
         """Назначает роли для Heads-Up игры (2 игрока)."""
         # Получаем активных игроков за столом
-        active_players = list(self.roomplayer_set.filter(is_active=True))
+        active_players = list(self.players.filter(is_active=True))
 
         if len(active_players) < 2:
             self.is_active = False
@@ -48,30 +49,77 @@ class Room(models.Model):
 
         print(f"Диллер: {active_players[dealer_index].user.username}")
         print(f"Big Blind: {active_players[big_blind_index].user.username}")
-     async def start_game(self):
-            """Запускает игру с 3-секундной задержкой после подключения игрока."""
-            print("Ожидание других игроков... Игра начнется через 3 секунды.")
-            await asyncio.sleep(3)  # 3-секундная задержка
 
-            # Получаем всех активных игроков
-            active_players = list(self.roomplayer_set.filter(is_active=True))
+    async def add_player(self, player):
+        """Добавляет игрока в комнату и проверяет, можно ли начать игру."""
+        # Добавляем игрока в комнату
+        await sync_to_async(player.save)()
 
-            if len(active_players) < 2:
-                print("Недостаточно игроков для старта игры.")
-                return
+        # Проверяем количество активных игроков
+        active_players = await sync_to_async(list)(self.players.filter(is_active=True))
 
-            # Назначаем позиции (диллер, биг блайнд и т.д.)
-            self.assign_positions()
-            self.is_active = True
-            self.save()
+        # Если игроков двое или больше, запускаем игру
+        if len(active_players) >= 2:
+            await self.start_game()
+    def assign_positions(self):
+        """Назначает роли в зависимости от количества игроков за столом."""
+        active_players = list(self.players.filter(is_active=True))
 
-            # Отправляем сообщение клиентам о начале игры через WebSocket
-            from channels.layers import get_channel_layer
-            channel_layer = get_channel_layer()
-            await channel_layer.group_send(
-                f"room_{self.unique_id}",
-                {
-                    "type": "game.start",
-                    "message": "Игра началась!",
-                }
-            )
+        if len(active_players) < 2:
+            print('Недостаточно игроков для игры')
+            return
+
+        # Сбрасываем текущие роли
+        for player in active_players:
+            player.role = 'Player'
+            player.save()
+
+        # Если два игрока — Heads-Up Poker
+        if len(active_players) == 2:
+            self.assign_heads_up_positions()
+        else:
+            # Назначаем роли для трех и более игроков
+            dealer_index = random.randint(0, len(active_players) - 1)
+            small_blind_index = (dealer_index + 1) % len(active_players)
+            big_blind_index = (dealer_index + 2) % len(active_players)
+
+            active_players[dealer_index].role = 'Dealer'
+            active_players[dealer_index].save()
+
+            active_players[small_blind_index].role = 'Small Blind'
+            active_players[small_blind_index].save()
+
+            active_players[big_blind_index].role = 'Big Blind'
+            active_players[big_blind_index].save()
+
+            print(f"Диллер: {active_players[dealer_index].user.username}")
+            print(f"Small Blind: {active_players[small_blind_index].user.username}")
+            print(f"Big Blind: {active_players[big_blind_index].user.username}")
+
+    async def start_game(self):
+        """Запускает игру с 3-секундной задержкой после подключения игрока."""
+        print("Ожидание других игроков... Игра начнется через 3 секунды.")
+          # 3-секундная задержка
+
+        # Получаем всех активных игроков
+        active_players = await sync_to_async(list)(self.players.filter(is_active=True))
+
+        if len(active_players) < 2:
+            print("Недостаточно игроков для старта игры.")
+            return
+
+        # Назначаем позиции (диллер, биг блайнд и т.д.)
+        await sync_to_async(self.assign_positions)()
+        self.is_active = True
+        await sync_to_async(self.save)()
+
+        # Отправляем сообщение клиентам о начале игры через WebSocket
+        from channels.layers import get_channel_layer
+        channel_layer = get_channel_layer()
+        await channel_layer.group_send(
+            f"room_{self.unique_id}",
+            {
+                "type": "game.start",
+                "message": "Игра началась!",
+            }
+        )

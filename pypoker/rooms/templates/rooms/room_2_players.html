@@ -1,5 +1,6 @@
 
 {% extends 'rooms/room_details.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -12,6 +13,9 @@
                         <div class="player-info">
                             <span>{{ player.user.username }}</span>
                             <span>Stack: {{ player.stack }}</span>
+                            {% if player.role %}
+                                 <img src="{% static 'images/roles/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
+                            {% endif %}
                         </div>
                     {% else %}
                         <button class="sit-btn" data-seat="{{ seat }}">SIT</button>
@@ -59,8 +63,10 @@
         socket.onmessage = (e) => {
     const data = JSON.parse(e.data);
 
-    if (data.action === 'error') {
-        alert(data.message);  // Показываем сообщение об ошибке
+    if (data.action === 'game_start') {
+        alert(data.message);  // Сообщение о старте игры
+    } else if (data.action === 'error') {
+        alert(data.message);
     } else if (data.action === 'player_join') {
         const seat = document.getElementById(`seat-${data.seat}`);
         seat.innerHTML = `<div class="player-info">
@@ -77,6 +83,7 @@
         });
     }
 };
+
 
     </script>
 {% endblock %}
