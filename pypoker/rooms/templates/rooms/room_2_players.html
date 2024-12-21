@@ -14,7 +14,7 @@
                             <span>{{ player.user.username }}</span>
                             <span>Stack: {{ player.stack }}</span>
                             {% if player.role %}
-                                 <img src="{% static 'images/roles/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
+                                 <img src="{% static 'rooms/jpg/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
                             {% endif %}
                         </div>
                     {% else %}
