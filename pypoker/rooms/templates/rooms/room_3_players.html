@@ -2,66 +2,46 @@
 {% load static %}
 
 {% block content %}
-
-<!-- Контейнер стола -->
-<div class="table-container">
-    <!-- Игрок слева -->
-    <div class="player-seat" id="seat-1" style="left: 5%; top: 50%; transform: translateY(-50%);">
-        {% with players|dictsort:"seat_number" as sorted_players %}
-            {% with sorted_players|first as player %}
-                {% if player and player.seat_number == 1 %}
-                    <div class="player-info">
-                        <span class="username">{{ player.user.username }}</span>
-                        <span class="stack">Stack: {{ player.stack }}</span>
-                        {% if player.role %}
-                            <img src="{% static 'rooms/jpg/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <button class="sit-btn" data-seat="1">SIT</button>
-                {% endif %}
-            {% endwith %}
-        {% endwith %}
+<div class="game-info">
+    <div class="pot-info">
+        <span>Текущий банк: <span id="pot-value">{{ room.pot }}</span></span>
     </div>
-
-    <!-- Игрок справа -->
-    <div class="player-seat" id="seat-2" style="right: 5%; top: 50%; transform: translateY(-50%);">
-        {% with players|dictsort:"seat_number" as sorted_players %}
-            {% with sorted_players|first as player %}
-                {% if player and player.seat_number == 2 %}
-                    <div class="player-info">
-                        <span class="username">{{ player.user.username }}</span>
-                        <span class="stack">Stack: {{ player.stack }}</span>
-                        {% if player.role %}
-                            <img src="{% static 'rooms/jpg/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <button class="sit-btn" data-seat="2">SIT</button>
-                {% endif %}
-            {% endwith %}
-        {% endwith %}
+    <div id="current-player-info">
+        Текущий игрок: <span id="current-player">Ожидание...</span>
     </div>
-
-    <!-- Игрок снизу -->
-    <div class="player-seat" id="seat-3" style="bottom: 5%; left: 50%; transform: translateX(-50%);">
-        {% with players|dictsort:"seat_number" as sorted_players %}
-            {% with sorted_players|first as player %}
-                {% if player and player.seat_number == 3 %}
-                    <div class="player-info">
-                        <span class="username">{{ player.user.username }}</span>
-                        <span class="stack">Stack: {{ player.stack }}</span>
-                        {% if player.role %}
-                            <img src="{% static 'rooms/jpg/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
-                        {% endif %}
-                    </div>
-                {% else %}
-                    <button class="sit-btn" data-seat="3">SIT</button>
-                {% endif %}
-            {% endwith %}
-        {% endwith %}
+    <div class="action-buttons">
+        <button id="fold-btn" disabled>Fold</button>
+        <button id="call-btn" disabled>Call</button>
+        <button id="check-btn" disabled>Check</button>
+        <button id="raise-btn" disabled>Raise/Bet</button>
     </div>
 </div>
+{% for seat_number in seats %}
+<div class="player-seat" id="seat-{{ seat_number }}"
+     style="
+     {% if seat_number == 1 %} left: 5%; top: 50%; transform: translateY(-50%);
+     {% elif seat_number == 2 %} left: 80%; top: 50%; transform: translateY(-50%);
+     {% elif seat_number == 3 %} bottom: 10%; left: 50%; transform: translateX(-50%);
+     {% endif %}
+     ">
+    {% with players|dictsort:"seat_number" as sorted_players %}
+        {% with sorted_players|first as player %}
+            {% if player and player.seat_number == seat_number %}
+                <div class="player-info">
+                    <span class="username">{{ player.user.username }}</span>
+                    <span class="stack">Stack: {{ player.stack }}</span>
+                    {% if player.role %}
+                        <img src="{% static 'rooms/jpg/'|add:player.role|add:'.jpg' %}" alt="{{ player.role }}">
+                    {% endif %}
+                </div>
+            {% else %}
+                <button class="sit-btn" data-seat="{{ seat_number }}">SIT</button>
+            {% endif %}
+        {% endwith %}
+    {% endwith %}
+</div>
+{% endfor %}
+
 
 <!-- Модальное окно -->
 <div id="modal-overlay"></div>
@@ -74,57 +54,6 @@
     </form>
 </div>
 
-<script>
-    const roomId = "{{ room.unique_id }}";
-    const socket = new WebSocket(`ws://${window.location.host}/ws/room/${roomId}/`);
-    const modal = document.getElementById('buy-in-modal');
-    const overlay = document.getElementById('modal-overlay');
-    const form = document.getElementById('buy-in-form');
-    let currentSeat = null;
 
-    document.querySelectorAll('.sit-btn').forEach(button => {
-        button.addEventListener('click', () => {
-            currentSeat = button.getAttribute('data-seat');
-            modal.classList.add('modal-active');
-            overlay.classList.add('modal-active');
-        });
-    });
-
-    form.onsubmit = (e) => {
-        e.preventDefault();
-        const stack = document.getElementById('stack').value;
-        socket.send(JSON.stringify({
-            action: 'sit',
-            seat: currentSeat,
-            stack: stack
-        }));
-        modal.classList.remove('modal-active');
-        overlay.classList.remove('modal-active');
-    };
-
-    socket.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-
-        if (data.action === 'game_start') {
-            alert(data.message); // Сообщение о старте игры
-        } else if (data.action === 'error') {
-            alert(data.message);
-        } else if (data.action === 'player_join') {
-            const seat = document.getElementById(`seat-${data.seat}`);
-            seat.innerHTML = `<div class="player-info">
-                <span class="username">${data.username}</span>
-                <span class="stack">Stack: ${data.stack}</span>
-            </div>`;
-        } else if (data.action === 'load_players') {
-            data.players.forEach(player => {
-                const seat = document.getElementById(`seat-${player.seat_number}`);
-                seat.innerHTML = `<div class="player-info">
-                    <span class="username">${player.user__username}</span>
-                    <span class="stack">Stack: ${player.stack}</span>
-                </div>`;
-            });
-        }
-    };
-</script>
 
 {% endblock %}

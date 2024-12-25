@@ -8,6 +8,105 @@
     <link rel="stylesheet" href="{% static 'rooms/styles/styles.css' %}">
 </head>
 <body>
-    {% block content %}{% endblock %}
+
+    {% block content %}
+
+{% endblock %}
 </body>
 </html>
+<script>
+
+    const roomId = "{{ room.unique_id }}";
+    const socket = new WebSocket(`ws://${window.location.host}/ws/room/${roomId}/`);
+    const modal = document.getElementById('buy-in-modal');
+    const overlay = document.getElementById('modal-overlay');
+    const form = document.getElementById('buy-in-form');
+    let currentSeat = null;
+
+    // Показываем модальное окно
+    document.querySelectorAll('.sit-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            console.log("SIT button clicked!"); // Проверка
+            currentSeat = button.getAttribute('data-seat');
+            modal.style.display = 'block'; // Показ модального окна
+            overlay.style.display = 'block'; // Показ затемнения
+        });
+    });
+
+    // Закрытие модального окна после отправки формы
+    form.onsubmit = (e) => {
+        e.preventDefault();
+        const stack = document.getElementById('stack').value;
+        socket.send(JSON.stringify({
+            action: 'sit',
+            seat: currentSeat,
+            stack: stack
+        }));
+        modal.style.display = 'none'; // Скрыть модальное окно
+        overlay.style.display = 'none'; // Скрыть затемнение
+    };
+
+   socket.onmessage = (e) => {
+    const data = JSON.parse(e.data);
+
+    if (data.action === 'update_buttons') {
+        document.getElementById('fold-btn').disabled = !data.canFold;
+        document.getElementById('call-btn').disabled = !data.canCall;
+        document.getElementById('check-btn').disabled = !data.canCheck;
+        document.getElementById('raise-btn').disabled = !data.canRaise;
+    }
+
+    if (data.action === 'game_start') {
+        document.getElementById('current-player').textContent = `Player ${data.current_player}`;
+    }
+
+    if (data.action === 'update_pot') {
+        document.getElementById('pot-value').textContent = data.pot;
+    }
+};
+
+// Кнопки действий
+document.getElementById('fold-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'fold', player: "{{ user.username }}" }));
+});
+
+document.getElementById('call-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'call', player: "{{ user.username }}" }));
+});
+
+document.getElementById('check-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'check', player: "{{ user.username }}" }));
+});
+
+document.getElementById('raise-btn').addEventListener('click', () => {
+    const raiseAmount = prompt("Введите сумму ставки:");
+    socket.send(JSON.stringify({
+        action: 'raise',
+        player: "{{ user.username }}",
+        amount: parseInt(raiseAmount, 10)
+    }));
+});
+
+
+document.getElementById('fold-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'fold', player: "{{ user.username }}" }));
+});
+
+document.getElementById('call-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'call', player: "{{ user.username }}" }));
+});
+
+document.getElementById('check-btn').addEventListener('click', () => {
+    socket.send(JSON.stringify({ action: 'check', player: "{{ user.username }}" }));
+});
+
+document.getElementById('raise-btn').addEventListener('click', () => {
+    const raiseAmount = prompt("Введите сумму ставки:");
+    socket.send(JSON.stringify({
+        action: 'raise',
+        player: "{{ user.username }}",
+        amount: raiseAmount
+    }));
+});
+
+</script>

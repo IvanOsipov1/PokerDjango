@@ -22,14 +22,15 @@ class RoomPlayer(models.Model):
         on_delete=models.CASCADE,
         related_name="players"
     )
-    stack = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    stack = models.FloatField(default=0.0)
     seat_number = models.PositiveIntegerField(null=True, blank=True)
     status = models.CharField(max_length=20, default="active")
     last_action = models.CharField(max_length=20, null=True, blank=True)
     joined_at = models.DateTimeField(auto_now_add=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='Player')
     is_active = models.BooleanField(default=True)
-
+    current_bet = models.PositiveIntegerField(default=0,
+                                              verbose_name="Активная ставка игрока")  # Ставка игрока на текущей улице
     def assign_role(self, role):
         self.role = role
         self.save()

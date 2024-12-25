@@ -222,3 +222,30 @@ body {
     right: 10%; /* Смещение ближе к краю стола */
     transform: translate(0, -50%);
 }
+
+.player-info img {
+    width: 40px; /* Уменьшенный размер */
+    height: auto; /* Пропорциональная высота */
+    z-index: 10; /* На переднем плане */
+    position: relative;
+}
+img {
+    position: relative;
+    z-index: 1000;
+    border: 2px solid red; /* Видимая рамка для проверки */
+}
+
+div.action-buttons {
+    position: absolute;
+    bottom: 5%; /* Расположение на 5% выше нижнего края */
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px; /* Расстояние между кнопками */
+}
+
+div.action-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}

@@ -35,55 +35,5 @@
         </form>
     </div>
 
-    <script>
-        const roomId = "{{ room.unique_id }}";
-        const socket = new WebSocket(`ws://${window.location.host}/ws/room/${roomId}/`);
-        const modal = document.getElementById('buy-in-modal');
-        const form = document.getElementById('buy-in-form');
-        let currentSeat = null;
 
-        document.querySelectorAll('.sit-btn').forEach(button => {
-            button.addEventListener('click', () => {
-                currentSeat = button.getAttribute('data-seat');
-                modal.style.display = 'block';
-            });
-        });
-
-        form.onsubmit = (e) => {
-            e.preventDefault();
-            const stack = document.getElementById('stack').value;
-            socket.send(JSON.stringify({
-                action: 'sit',
-                seat: currentSeat,
-                stack: stack
-            }));
-            modal.style.display = 'none';
-        };
-
-        socket.onmessage = (e) => {
-    const data = JSON.parse(e.data);
-
-    if (data.action === 'game_start') {
-        alert(data.message);  // Сообщение о старте игры
-    } else if (data.action === 'error') {
-        alert(data.message);
-    } else if (data.action === 'player_join') {
-        const seat = document.getElementById(`seat-${data.seat}`);
-        seat.innerHTML = `<div class="player-info">
-            <span>${data.username}</span>
-            <span>Stack: ${data.stack}</span>
-        </div>`;
-    } else if (data.action === 'load_players') {
-        data.players.forEach(player => {
-            const seat = document.getElementById(`seat-${player.seat_number}`);
-            seat.innerHTML = `<div class="player-info">
-                <span>${player.user__username}</span>
-                <span>Stack: ${player.stack}</span>
-            </div>`;
-        });
-    }
-};
-
-
-    </script>
 {% endblock %}

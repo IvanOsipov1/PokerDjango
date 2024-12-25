@@ -31,7 +31,7 @@ def create_room(request):
         big_blind = int(request.POST.get('big_blind'))
         small_blind = big_blind // 2  # Малый блайнд — половина большого
         blinds = f"{small_blind}/{big_blind}"
-        room = Room.objects.create(max_players=max_players, blinds=blinds)
+        room = Room.objects.create(max_players=max_players, big_blind=big_blind)
         return JsonResponse({'room_id': room.unique_id})
     return JsonResponse({'error': 'Invalid request'}, status=400)
 

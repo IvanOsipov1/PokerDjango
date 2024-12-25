@@ -1,7 +1,7 @@
 {% for room in rooms %}
     <div class="room">
         <p>Комната: {{ room.name }}</p>
-        <p>Блайнды: {{ room.blinds }}</p>
+        <p>Блайнды: {{ room.big_blind }}</p>
         <a href="{% url 'room_detail' unique_id=room.unique_id %}">Перейти в комнату</a>
     </div>
 {% empty %}
